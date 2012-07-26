@@ -56,13 +56,7 @@ def count_neighbours( cells, wrap ):
     
     return counts
 
-def apply( cells, wrap = None ):
-    assert cells.ndim == 2
-    
-    # we roll the cells around in 8 directions and add them up
-    # this lets us count ALL cells neighbours in one operation
-    counts = count_neighbours( cells, wrap )
-    
+def apply_rules( cells, counts ):
     # apply conway's rules
     # using numpy.where
     
@@ -79,6 +73,18 @@ def apply( cells, wrap = None ):
     
     # rule 4: 3 neighbours = alive
     new_cells = numpy.where( counts == 3, [1], new_cells )
+    
+    return new_cells
+
+def apply( cells, wrap = None ):
+    assert cells.ndim == 2
+    
+    # we roll the cells around in 8 directions and add them up
+    # this lets us count ALL cells neighbours in one operation
+    counts = count_neighbours( cells, wrap )
+    
+    # apply conway's rules
+    new_cells = apply_rules( cells, counts )
     
     return new_cells
 
