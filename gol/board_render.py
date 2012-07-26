@@ -118,7 +118,8 @@ if __name__ == '__main__':
     
     glEnableClientState(GL_VERTEX_ARRAY)
     
-    board = numpy.random.randint( 2, size = (50,50) )
+    size = (50,50)
+    board = numpy.random.randint( 2, size = size )
     renderer = BoardRenderer( board )
     
     @window.event
@@ -132,6 +133,12 @@ if __name__ == '__main__':
         global renderer
         renderer.render()
     
+    @window.event
+    def on_key_press(symbol, modifiers):
+        global renderer
+        global size
+        if symbol == pyglet.window.key.SPACE:
+            renderer.board = numpy.random.randint( 2, size = size )
     
     def update( delta ):
         global renderer
