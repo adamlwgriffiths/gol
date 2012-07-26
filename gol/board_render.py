@@ -14,7 +14,7 @@ class BoardRenderer( object ):
     def render( self ):
         # draw the grid
         glLineWidth( 1.0 )
-        glColor3f( 1.0, 1.0, 1.0 )
+        glColor3f( 0.5, 0.5, 0.5 )
         glDisable( GL_LIGHTING )
         
         glCallList( self.grid )
