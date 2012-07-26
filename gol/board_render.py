@@ -21,20 +21,48 @@ class BoardRenderer( object ):
         
         # draw any cells
         glColor3f( 1.0, 0.0, 0.0 )
+
+        use_display_list = False
+
+        if use_display_list == False:
+            # create a list of vertices for our cell
+            glEnableClientState( GL_VERTEX_ARRAY )
+            x_size, y_size = 2.0 / self.board.shape[ 0 ], 2.0 / self.board.shape[ 1 ]
+            quad = numpy.array(
+                [
+                    0.0, 0.0,
+                    x_size, 0.0,
+                    x_size, y_size,
+                    0.0, y_size
+                    ],
+                    dtype = numpy.float
+                    )
+            cells = []
         
         indices = numpy.where( self.board == 1 )
         indices = numpy.dstack( (indices[ 0 ], indices[ 1 ]) )[ 0 ]
         
         for cell in indices:
-            glLoadIdentity()
             pos = numpy.array( [ float(cell[ 0 ]), float(cell[ 1 ]) ], dtype = numpy.float )
 
             pos *= [ 2.0 / self.board.shape[ 0 ], 2.0 / self.board.shape[ 1 ] ]
             pos += [-1.0,-1.0 ]
             
-            glTranslatef( pos[ 0 ], pos[ 1 ], 0.0 )            
+            if use_display_list:
+                glLoadIdentity()
+                glTranslatef( pos[ 0 ], pos[ 1 ], 0.0 )            
 
-            glCallList( self.cell )
+                glCallList( self.cell )
+            else:
+                cells.extend( quad + numpy.tile(pos, 4) )
+        
+        if use_display_list:
+            pass
+        else:
+            vertices_gl = (GLfloat * len(cells))(*cells)
+            glVertexPointer( 2, GL_FLOAT, 0, vertices_gl )
+            glLoadIdentity()
+            glDrawArrays(GL_QUADS, 0, len(cells) // 2)
 
     def _create_cell( self ):
         display_list = glGenLists( 1 )
@@ -118,7 +146,7 @@ if __name__ == '__main__':
     
     glEnableClientState(GL_VERTEX_ARRAY)
     
-    size = (50,50)
+    size = (100,100)
     board = numpy.random.randint( 2, size = size )
     renderer = BoardRenderer( board )
     
