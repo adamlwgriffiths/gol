@@ -60,21 +60,19 @@ def apply_rules( cells, counts ):
     # apply conway's rules
     # using numpy.where
     
-    new_cells = numpy.array( cells )
-    
     # rule 1: < 2 neighbour = dead
-    new_cells = numpy.where( counts < 2, [0], new_cells )
+    cells = numpy.where( counts < 2, [0], cells )
     
     # rule 2: 2 - 3 neighbours = alive
     pass
     
     # rule 3: > 3 neighbours = dead
-    new_cells = numpy.where( counts > 3, [0], new_cells )
+    cells = numpy.where( counts > 3, [0], cells )
     
     # rule 4: 3 neighbours = alive
-    new_cells = numpy.where( counts == 3, [1], new_cells )
+    cells = numpy.where( counts == 3, [1], cells )
     
-    return new_cells
+    return cells
 
 def apply( cells, wrap = None ):
     assert cells.ndim == 2
